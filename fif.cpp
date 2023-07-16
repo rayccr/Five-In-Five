@@ -7,7 +7,7 @@
 #include <qDebug>
 #include <QPainter>
 #include <QPixmap>
-#include <QDebug>
+#include <qDebug>
 #include <iostream>
 #include <QDialog>
 #include <QMessageBox>
@@ -21,6 +21,14 @@ FIF::FIF(QWidget *parent)
 
     ui->label->setText("轮到：蓝色");
     ui->widget->setStyleSheet("background-color: blue;");
+
+    ui->label_2->hide();
+    ui->label_3->hide();
+    ui->label_4->hide();
+    ui->label_5->hide();
+    ui->label_6->hide();
+    ui->label_7->hide();
+
 }
 
 void FIF::paintEvent(QPaintEvent* event)
@@ -42,7 +50,6 @@ void FIF::paintEvent(QPaintEvent* event)
             painter.drawRect(x, y, gridSize, gridSize);
         }
     }
-
 
     QPainter painter2(this);
     for(auto &x: shapes)
@@ -71,12 +78,19 @@ void FIF::reset()
     ui->label->setText("轮到：蓝色");
     ui->widget->setStyleSheet("background-color: blue;");
     shapes.clear();
+    ui->label_2->hide();
+    ui->label_3->hide();
+    ui->label_4->hide();
+    ui->label_5->hide();
+    ui->label_6->hide();
+    ui->label_7->hide();
 }
 
 bool FIF::event(QEvent *e)
 {
     if(e->type() == QEvent::MouseButtonPress)
     {
+
         QMouseEvent *ev = static_cast<QMouseEvent*> (e);
         int y = ev->x(), x = ev->y(); // ev中的是数学坐标轴，要转换为数组坐标轴
 
@@ -112,13 +126,19 @@ bool FIF::event(QEvent *e)
 
 
         if(winner == "") match();
-        else
+        if(winner != "")
         {
             QString str = "";
             if(winner == "Blue") str = "蓝色胜利了！！";
             else if(winner == "Red") str = "红色胜利了！！";
+            ui->label_2->show();
+            ui->label_3->show();
+            ui->label_4->show();
+            ui->label_5->show();
+            ui->label_6->show();
+            ui->label_7->show();
 
-            int choose = QMessageBox::information(this, "已出现胜利者", str, "不服再战", "不玩了");
+            int choose = QMessageBox::information(this, "MVP结算界面", str, "不服!再战!!", "不玩了");
             if(choose == 0) reset();
             else if(choose == 1) QApplication::quit();
         }
@@ -127,6 +147,23 @@ bool FIF::event(QEvent *e)
     }
 
     return QWidget::event(e); // 交给父类去分发
+}
+
+
+void FIF::match()
+{
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            if(st[i][j] && dfs(i, j))
+            {
+                if(g[i][j] == 1) winner = "Blue";
+                else if(g[i][j] == 2) winner = "Red";
+                return;
+            }
+        }
+    }
 }
 
 bool FIF::dfs(int x, int y)
@@ -146,22 +183,6 @@ bool FIF::dfs(int x, int y)
         if(cnt >= 5) return true;
     }
     return false;
-}
-
-void FIF::match()
-{
-    for(int i = 0; i < N; i++)
-    {
-        for(int j = 0; j < N; j++)
-        {
-            if(st[i][j] && dfs(i, j))
-            {
-                if(g[i][j] == 1) winner = "Blue";
-                else if(g[i][j] == 2) winner = "Red";
-                return;
-            }
-        }
-    }
 }
 
 int FIF::changeColor(int color)
