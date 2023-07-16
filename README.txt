@@ -1,1 +1,2 @@
 1. 在重新开始游戏时，reset操作不能在paintEvent重载事件，paintEvent中对string或QString赋值似乎会发生无效的现象。
+2. 需要注意connect这里应该是执行完全部才更新外部的，因为这个问题，我们可以反正写，这或许和第一个问题一样。

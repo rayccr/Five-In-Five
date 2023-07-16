@@ -29,6 +29,32 @@ FIF::FIF(QWidget *parent)
     ui->label_6->hide();
     ui->label_7->hide();
 
+    connect(ui->pushButton, &QPushButton::clicked, [=](){
+        if(shapes.size() == 0) return;
+
+        auto t = shapes.back();
+        int xx = t.y / 40 - 1, yy =t.x / 40 - 1;
+        st[xx][yy] = false;
+        g[xx][yy] = 0;
+
+        color = changeColor(t.color);
+        qDebug() << color;
+
+        // 需要注意connect这里应该是执行完全部才更新外部的，因为这个问题，我们可以反正写，这或许和第一个问题一样
+        if(color == 2)
+        {
+            ui->label->setText("轮到：蓝色");
+            ui->widget->setStyleSheet("background-color: blue;");
+        }
+        else if(color == 1)
+        {
+            ui->label->setText("轮到：红色");
+            ui->widget->setStyleSheet("background-color: red;");
+        }
+        shapes.pop_back();
+        update();
+    });
+
 }
 
 void FIF::paintEvent(QPaintEvent* event)

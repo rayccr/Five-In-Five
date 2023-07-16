@@ -13,7 +13,7 @@ const int N = 15;
 
 struct Shape {
     int x;
-    int y;
+    int y; // 屏幕坐标，并不是矩阵坐标
     int radius;
     int color;
 };
