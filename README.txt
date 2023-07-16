@@ -1,0 +1,1 @@
+1. 在重新开始游戏时，reset操作不能在paintEvent重载事件，paintEvent中对string或QString赋值似乎会发生无效的现象。
